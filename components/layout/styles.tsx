@@ -19,6 +19,11 @@ export const Logo = styled.div`
   justify-content: start;
   max-width: 30%;
   height: auto;
+
+    @media (min-width: 320px) and (max-width: 768px) {
+        max-width: 100%;
+        justify-content: center;
+    }
 `;
 
 export const ButtonExplore = styled.button`
@@ -36,4 +41,8 @@ export const ButtonExplore = styled.button`
     color: #fff;
     font-weight: 700;
   }
+
+    @media (min-width: 320px) and (max-width: 768px) {
+        display: none;
+    }
 `;

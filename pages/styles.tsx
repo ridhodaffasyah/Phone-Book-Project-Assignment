@@ -6,6 +6,22 @@ export const Loading = styled.div`
   justify-content: center;
   height: 100vh;
   width: 100vw;
+
+  @media (max-width: 320px) {
+    font-size: 0.5rem;
+  };
+
+  @media (min-width: 321px) and (max-width: 480px) {
+    font-size: 0.75rem;
+  };
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 1rem;
+  };
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 1.25rem;
+  };
 `;
 
 export const DotContainer = styled.div`
@@ -64,6 +80,10 @@ export const Container = styled.div`
   justify-content: center;
   width: 85%;
   height: 100%;
+
+  @media (min-width: 320px) and (max-width: 768px){
+    flex-direction: column;
+  };
 `;
 
 export const ImageContainer = styled.div`
@@ -74,6 +94,15 @@ export const ImageContainer = styled.div`
   justify-content: end;
   position: relative;
   z-index: 2;
+
+  @media (min-width: 320px) and (max-width: 768px){
+    width: 100%;
+    height: 80%;
+    margin-top: 1rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+  };
 `;
 
 export const Image = styled.img`
@@ -87,6 +116,13 @@ export const ContentContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 65%;
+  height: 100%;
+
+  @media (min-width: 320px) and (max-width: 768px) {
+    align-items: center;
+    justify-content: end;
+    text-align: center;
+  };
 `;
 
 export const HeadlineText = styled.h1`
@@ -95,6 +131,22 @@ export const HeadlineText = styled.h1`
   color: black;
   margin-bottom: 1rem;
   text-transform: uppercase;
+
+  @media (max-width: 320px) {
+    font-size: 2rem;
+  };
+
+  @media (min-width: 321px) and (max-width: 480px) {
+    font-size: 2.5rem;
+  };
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 3rem;
+  };
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 4rem;
+  };
 `;
 
 export const SubHeadlineText = styled.h2`
@@ -102,6 +154,22 @@ export const SubHeadlineText = styled.h2`
   font-weight: 500;
   color: black;
   margin-bottom: 1rem;
+
+  @media (max-width: 320px) {
+    font-size: 1rem;
+  };
+
+  @media (min-width: 321px) and (max-width: 480px) {
+    font-size: 1.25rem;
+  };
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 1.5rem;
+  };
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 1.75rem;
+  };
 `;
 
 export const Span = styled.span`
@@ -113,4 +181,20 @@ export const Span = styled.span`
   text-decoration-color: #000;
   text-decoration-thickness: 0.2rem;
   text-underline-offset: 0.2rem;
+
+  @media (max-width: 320px) {
+    font-size: 1rem;
+  };
+
+  @media (min-width: 321px) and (max-width: 480px) {
+    font-size: 1.25rem;
+  };
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 1.5rem;
+  };
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 1.75rem;
+  };
 `;

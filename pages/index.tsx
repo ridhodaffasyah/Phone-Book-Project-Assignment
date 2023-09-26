@@ -16,8 +16,7 @@ const Home = () => {
       <BackgroundImage />
       <Container>
         <ContentContainer>
-          <HeadlineText>Phone Book</HeadlineText>
-          <HeadlineText>Project</HeadlineText>
+          <HeadlineText>Phone Book Project</HeadlineText>
           <SubHeadlineText>
             <Span>Connect</Span> with your friends, family, and also the world!
           </SubHeadlineText>
