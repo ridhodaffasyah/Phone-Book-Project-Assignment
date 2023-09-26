@@ -1,19 +1,33 @@
-import styled from '@emotion/styled'
+import LayoutPages from "@/components/layout";
+import {
+  Container,
+  BackgroundImage,
+  ContentContainer,
+  ImageContainer,
+  Image,
+  HeadlineText,
+  SubHeadlineText,
+  Span,
+} from "./styles";
 
-const HeadlineText = styled.h1`
-  color: #FFFFFF;
-  font-size: 48px;
-  font-weight: 900;
-  text-align: center;
-  &:hover {
-    color: #FF0000;
-  }
-`;
-
-export default function Home() {
+const Home = () => {
   return (
-    <>
-      <HeadlineText>Next.js + TypeScript + Emotion</HeadlineText>
-    </>
-  )
-}
+    <LayoutPages>
+      <BackgroundImage />
+      <Container>
+        <ContentContainer>
+          <HeadlineText>Phone Book</HeadlineText>
+          <HeadlineText>Project</HeadlineText>
+          <SubHeadlineText>
+            <Span>Connect</Span> with your friends, family, and also the world!
+          </SubHeadlineText>
+        </ContentContainer>
+        <ImageContainer>
+          <Image src="/images/cartoon-2.png" alt="cartoon" />
+        </ImageContainer>
+      </Container>
+    </LayoutPages>
+  );
+};
+
+export default Home;

@@ -4,8 +4,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { Provider } from 'react-redux';
 import { wrapper } from '@/redux/store/store';
+import { Loading, Dot, DotContainer } from './styles';
 
-function App({ Component, ...rest}: AppProps) {
+const App = ({ Component, ...rest }: AppProps) => {
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
   const persistor = persistStore(store);
@@ -13,7 +14,14 @@ function App({ Component, ...rest}: AppProps) {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={
-        <div>Loading...</div>
+        <Loading>
+          <DotContainer>
+            <h1>Loading</h1>
+            <Dot />
+            <Dot />
+            <Dot />
+          </DotContainer>
+        </Loading>
       }>
         <Component {...pageProps} />
       </PersistGate>
