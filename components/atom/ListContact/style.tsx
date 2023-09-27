@@ -21,3 +21,13 @@ export const ContactContainer = styled.div`
   flex-direction: column;
   gap: 0.5rem;
 `;
+
+export const List = styled.li`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`;
+export const UList = styled.ul`
+  margin: 0;
+  padding: 0;
+`;

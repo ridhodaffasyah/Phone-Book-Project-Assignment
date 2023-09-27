@@ -22,9 +22,10 @@ export const Container2 = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  padding: 5rem 5rem 0 5rem;
+  padding: 1rem 5rem 0 5rem;
   flex-direction: column;
-  gap: 5rem;
+  gap: 3rem;
+  margin-bottom: 1rem;
 
   @media (min-width: 320px) and (max-width: 768px) {
     flex-direction: column;

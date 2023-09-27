@@ -17,29 +17,63 @@ import Pagination from "@/components/molecule/Pagination";
 import ContactList from "@/components/atom/ListContact";
 import Container from "@/components/organism/Container";
 
-const Home = () => {
-  // Sample contact data
-  const contacts = [
-    { id: 1, name: "John Doe", phone: "123-456-7890" },
-    { id: 2, name: "Jane Smith", phone: "987-654-3210" },
-    // Add more contacts as needed
-    { id: 3, name: "John Doe", phone: "123-456-7890" },
-    { id: 4, name: "Jane Smith", phone: "987-654-3210" },
-    // Add more contacts as needed
-    { id: 5, name: "John Doe", phone: "123-456-7890" },
-    { id: 6, name: "Jane Smith", phone: "987-654-3210" },
-    // Add more contacts as needed
-    { id: 7, name: "John Doe", phone: "123-456-7890" },
-    { id: 8, name: "Jane Smith", phone: "987-654-3210" },
-    // Add more contacts as needed
-    { id: 9, name: "John Doe", phone: "123-456-7890" },
-    { id: 10, name: "Jane Smith", phone: "987-654-3210" },
-    // Add more contacts as needed
-    { id: 11, name: "John Doe", phone: "123-456-7890" },
-    { id: 12, name: "Jane Smith", phone: "987-654-3210" },
-    // Add more contacts as needed
-  ];
+import { gql } from "@apollo/client";
+import createApolloClient from "../apollo-client";
 
+export async function getServerSideProps() {
+  const client = createApolloClient();
+  const { data } = await client.query({
+    query: gql`
+      query GetContactList(
+        $distinct_on: [contact_select_column!]
+        $limit: Int
+        $offset: Int
+        $order_by: [contact_order_by!]
+        $where: contact_bool_exp
+      ) {
+        contact(
+          distinct_on: $distinct_on
+          limit: $limit
+          offset: $offset
+          order_by: $order_by
+          where: $where
+        ) {
+          created_at
+          first_name
+          id
+          last_name
+          phones {
+            number
+          }
+        }
+      }
+    `,
+  });
+
+  return {
+    props: {
+      contacts: data.contact,
+    },
+  };
+}
+
+interface HomeProps {
+  contacts: [
+    {
+      created_at: string;
+      first_name: string;
+      id: number;
+      last_name: string;
+      phones: [
+        {
+          number: string;
+        }
+      ];
+    }
+  ];
+}
+
+const Home: React.FC<HomeProps> = ({ contacts }) => {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -74,6 +108,21 @@ const Home = () => {
         </Container>
         <Container id="contact-list">
           <div>
+            <h1>Favorite Contact</h1>
+          </div>
+          <ContainerList>
+            <Grid>
+              {currentPageContacts.map((contact) => (
+                <ContactList
+                  key={contact.id}
+                  id={contact.id}
+                  name={contact.first_name + " " + contact.last_name}
+                  phone={contact.phones.map((phone) => phone.number)}
+                />
+              ))}
+            </Grid>
+          </ContainerList>
+          <div>
             <h1>Contact List</h1>
           </div>
           <ContainerList>
@@ -82,8 +131,8 @@ const Home = () => {
                 <ContactList
                   key={contact.id}
                   id={contact.id}
-                  name={contact.name}
-                  phone={contact.phone}
+                  name={contact.first_name + " " + contact.last_name}
+                  phone={contact.phones.map((phone) => phone.number)}
                 />
               ))}
             </Grid>
