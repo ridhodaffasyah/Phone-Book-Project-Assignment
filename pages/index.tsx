@@ -1,7 +1,5 @@
-import LayoutPages from "@/components/layout";
+import React, { useState } from "react";
 import {
-  Container,
-  Container2,
   BackgroundImage,
   ContentContainer,
   ImageContainer,
@@ -10,9 +8,14 @@ import {
   SubHeadlineText,
   Span,
   ContainerTop,
+  PaginationContainer,
+  ContainerList,
+  Grid,
 } from "./styles";
-import styled from "@emotion/styled";
-import { useState } from "react";
+import LayoutPages from "@/components/Layout";
+import Pagination from "@/components/molecule/Pagination";
+import ContactList from "@/components/atom/ListContact";
+import Container from "@/components/organism/Container";
 
 const Home = () => {
   // Sample contact data
@@ -47,123 +50,17 @@ const Home = () => {
   // Slice the contacts for the current page
   const currentPageContacts = contacts.slice(startIndex, endIndex);
 
-  const ContainerList = styled.div`
-    display: flex;
-    width: 100%;
-    padding: 0rem 5rem 0 5rem;
-    flex-direction: column;
-    gap: 1rem;
-
-    @media (min-width: 320px) and (max-width: 768px) {
-      flex-direction: column;
-      font-size: 0.75rem;
-      padding: 0rem 0rem 0 0rem;
-    }
-  `;
-
-  const Grid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-
-    @media (min-width: 320px) and (max-width: 768px) {
-      grid-template-columns: repeat(1, 1fr);
-    }
-  `;
-
-  const ListContact = styled.div`
-    padding: 1rem;
-    border-radius: 0.25rem;
-    background-color: #fff;
-    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.25);
-    transition: all 0.25s ease-in-out;
-    width: 100%;
-
-    &:hover {
-      background-color: orange;
-      color: #fff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-  `;
-
-  const ContactContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  `;
-
-  const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-
-    @media (min-width: 320px) and (max-width: 768px) {
-      justify-content: center;
-      align-items: center;
-    }
-  `;
-
-  const PageItem = styled.a`
-    padding: 0.5rem 0.75rem;
-    margin: 0 0.25rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    color: #333;
-
-    &:hover {
-      background-color: orange;
-      color: #fff;
-    }
-
-    &.active {
-      background-color: orange;
-      color: #fff;
-      border-color: orange;
-    }
-
-
-    @media (min-width: 320px) and (max-width: 768px) {
-      padding: 0.5rem 0.75rem;
-      margin: 0 0.25rem 2rem 0.25rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
-      color: #333;
-    }
-  `;
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
   const totalPages = Math.ceil(contacts.length / itemsPerPage);
 
-  const Pagination = ({ currentPage, totalPages, onPageChange }: any) => {
-    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
-    return (
-      <PaginationContainer>
-        {pages.map((page) => (
-          <PageItem
-            key={page}
-            className={page === currentPage ? "active" : ""}
-            onClick={() => onPageChange(page)}
-          >
-            {page}
-          </PageItem>
-        ))}
-      </PaginationContainer>
-    );
-  };
-
   return (
     <LayoutPages>
       <BackgroundImage />
       <ContainerTop>
-        <Container>
+        <Container isLandingPage>
           <ContentContainer>
             <HeadlineText>Phone Book Project</HeadlineText>
             <SubHeadlineText>
@@ -175,19 +72,18 @@ const Home = () => {
             <Image src="/images/cartoon-2.png" alt="cartoon" />
           </ImageContainer>
         </Container>
-        <Container2 id="contact-list">
+        <Container id="contact-list">
           <div>
             <h1>Contact List</h1>
           </div>
           <ContainerList>
             <Grid>
               {currentPageContacts.map((contact) => (
-                <ListContact key={contact.id}>
-                  <ContactContainer>
-                    <strong>{contact.name}</strong>
-                    <p>{contact.phone}</p>
-                  </ContactContainer>
-                </ListContact>
+                <ContactList
+                  id={contact.id}
+                  name={contact.name}
+                  phone={contact.phone}
+                />
               ))}
             </Grid>
           </ContainerList>
@@ -198,7 +94,7 @@ const Home = () => {
               onPageChange={handlePageChange}
             />
           </PaginationContainer>
-        </Container2>
+        </Container>
       </ContainerTop>
     </LayoutPages>
   );

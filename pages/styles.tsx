@@ -9,19 +9,19 @@ export const Loading = styled.div`
 
   @media (max-width: 320px) {
     font-size: 0.5rem;
-  };
+  }
 
   @media (min-width: 321px) and (max-width: 480px) {
     font-size: 0.75rem;
-  };
+  }
 
   @media (min-width: 481px) and (max-width: 768px) {
     font-size: 1rem;
-  };
+  }
 
   @media (min-width: 769px) and (max-width: 1024px) {
     font-size: 1.25rem;
-  };
+  }
 `;
 
 export const DotContainer = styled.div`
@@ -71,41 +71,9 @@ export const BackgroundImage = styled.div`
 `;
 
 export const ContainerTop = styled.div`
-  overflowY: auto;
+  overflowy: auto;
   height: 100vh;
   width: 100%;
-`;
-
-export const Container = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 0 5rem 0 10rem;
-
-  @media (min-width: 320px) and (max-width: 768px){
-    flex-direction: column;
-    padding: 0 0 0 0;
-  };
-`;
-
-export const Container2 = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  padding: 5rem 5rem 0 5rem;
-  flex-direction: column;
-  gap: 5rem;
-
-  @media (min-width: 320px) and (max-width: 768px){
-    flex-direction: column;
-    font-size: 0.75rem;
-  };
 `;
 
 export const ImageContainer = styled.div`
@@ -117,14 +85,14 @@ export const ImageContainer = styled.div`
   position: relative;
   z-index: 2;
 
-  @media (min-width: 320px) and (max-width: 768px){
+  @media (min-width: 320px) and (max-width: 768px) {
     width: 100%;
     height: 80%;
     margin-top: 1rem;
     flex-direction: column;
     align-items: center;
     justify-content: start;
-  };
+  }
 `;
 
 export const Image = styled.img`
@@ -144,7 +112,7 @@ export const ContentContainer = styled.div`
     align-items: center;
     justify-content: end;
     text-align: center;
-  };
+  }
 `;
 
 export const HeadlineText = styled.h1`
@@ -156,19 +124,19 @@ export const HeadlineText = styled.h1`
 
   @media (max-width: 320px) {
     font-size: 2rem;
-  };
+  }
 
   @media (min-width: 321px) and (max-width: 480px) {
     font-size: 2.5rem;
-  };
+  }
 
   @media (min-width: 481px) and (max-width: 768px) {
     font-size: 3rem;
-  };
+  }
 
   @media (min-width: 769px) and (max-width: 1024px) {
     font-size: 4rem;
-  };
+  }
 `;
 
 export const SubHeadlineText = styled.h2`
@@ -179,19 +147,19 @@ export const SubHeadlineText = styled.h2`
 
   @media (max-width: 320px) {
     font-size: 1rem;
-  };
+  }
 
   @media (min-width: 321px) and (max-width: 480px) {
     font-size: 1.25rem;
-  };
+  }
 
   @media (min-width: 481px) and (max-width: 768px) {
     font-size: 1.5rem;
-  };
+  }
 
   @media (min-width: 769px) and (max-width: 1024px) {
     font-size: 1.75rem;
-  };
+  }
 `;
 
 export const Span = styled.span`
@@ -207,20 +175,54 @@ export const Span = styled.span`
   @media (max-width: 320px) {
     font-size: 1rem;
     text-decoration-thickness: 0.1rem;
-  };
+  }
 
   @media (min-width: 321px) and (max-width: 480px) {
     font-size: 1.25rem;
     text-decoration-thickness: 0.15rem;
-  };
+  }
 
   @media (min-width: 481px) and (max-width: 768px) {
     font-size: 1.5rem;
     text-decoration-thickness: 0.2rem;
-  };
+  }
 
   @media (min-width: 769px) and (max-width: 1024px) {
     font-size: 1.75rem;
     text-decoration-thickness: 0.25rem;
-  };
+  }
+`;
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+
+  @media (min-width: 320px) and (max-width: 768px) {
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+export const ContainerList = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 0rem 5rem 0 5rem;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 320px) and (max-width: 768px) {
+    flex-direction: column;
+    font-size: 0.75rem;
+    padding: 0rem 0rem 0 0rem;
+  }
+`;
+
+export const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (min-width: 320px) and (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
