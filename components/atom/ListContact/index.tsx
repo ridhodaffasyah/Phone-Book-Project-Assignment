@@ -9,7 +9,7 @@ interface ListContactProps {
 
 const ContactList: React.FC<ListContactProps> = ({ id, name, phone }) => {
   return (
-    <ListContact key={id}>
+    <ListContact>
       <ContactContainer>
         <strong>{name}</strong>
         <p>{phone}</p>

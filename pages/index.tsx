@@ -80,6 +80,7 @@ const Home = () => {
             <Grid>
               {currentPageContacts.map((contact) => (
                 <ContactList
+                  key={contact.id}
                   id={contact.id}
                   name={contact.name}
                   phone={contact.phone}
