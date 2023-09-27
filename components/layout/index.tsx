@@ -1,6 +1,8 @@
 import React, { ReactNode } from "react";
 import Image from "next/image";
-import { Header, Logo, ButtonExplore } from "./styles";
+import Button from "../atom/Button";
+import Navbar from "../molecule/Navbar";
+import { Logo } from "./style";
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,19 +13,19 @@ const LayoutPages: React.FC<LayoutProps> = ({ children }) => {
     const element = document.getElementById("contact-list");
     if (element) {
       const yOffset = element.getBoundingClientRect().top + window.scrollY;
-      
+
       window.scrollTo({ top: yOffset, behavior: "smooth" });
     }
   };
 
   return (
     <main>
-      <Header>
+      <Navbar>
         <Logo>
           <Image src="/images/logo-3.png" alt="logo" width={220} height={30} />
         </Logo>
-        <ButtonExplore onClick={handleButtonExplore}>Explore</ButtonExplore>
-      </Header>
+        <Button isExplore text="Explore" handleButton={handleButtonExplore} />
+      </Navbar>
       {children}
     </main>
   );
