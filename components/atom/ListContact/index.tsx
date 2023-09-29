@@ -3,10 +3,12 @@ import Image from "next/image";
 import {
   ListContact,
   ContactContainer,
-  UList,
+  OList,
   List,
   ContainerInfo,
   ContainerFavorite,
+  ContainerImage,
+  ContainerIcon,
 } from "./style";
 
 interface ListContactProps {
@@ -46,30 +48,30 @@ const ContactList: React.FC<ListContactProps> = ({
   return (
     <ListContact>
       <ContainerInfo>
-        <Image
-          src="/images/profile.jpg"
-          alt="profile"
-          width={75}
-          height={75}
-          style={{
-            borderRadius: "50%",
-            objectFit: "cover",
-            objectPosition: "center",
-            border: "1px solid grey",
-          }}
-        />
+        <ContainerImage>
+          <Image
+            src="/images/profile.jpg"
+            alt="profile"
+            width={60}
+            height={60}
+            style={{
+              borderRadius: "50%",
+              objectFit: "cover",
+              objectPosition: "center",
+              border: "1px solid grey",
+            }}
+          />
+        </ContainerImage>
         <ContactContainer>
           <strong>{name}</strong>
           {phone.length > 0 ? (
             <>
               <span>Phone Number:</span>
-              <UList>
+              <OList type="1">
                 {phone?.map((item, index) => (
-                  <List key={index}>
-                    {index + 1}. {item}
-                  </List>
+                  <List key={index}>{item}</List>
                 ))}
-              </UList>
+              </OList>
             </>
           ) : (
             <span>Phone number not available</span>
@@ -77,29 +79,33 @@ const ContactList: React.FC<ListContactProps> = ({
         </ContactContainer>
       </ContainerInfo>
       <ContainerFavorite>
-        <Image
-          src={
-            isFavorite || isFavoriteHovered
-              ? "/images/star-on.png"
-              : "/images/star-off.png"
-          }
-          alt="star"
-          id="favorite-btn"
-          width={25}
-          height={25}
-          onClick={isFavorite ? onUnfavoriteToggle : onFavoriteToggle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        />
-        <Image
-          src={isEditHovered ? "/images/edit-on.png" : "/images/edit-off.png"}
-          alt="edit"
-          width={25}
-          height={25}
-          id="edit-btn"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        />
+        <ContainerIcon>
+          <Image
+            src={
+              isFavorite || isFavoriteHovered
+                ? "/images/star-on.png"
+                : "/images/star-off.png"
+            }
+            alt="star"
+            id="favorite-btn"
+            width={25}
+            height={25}
+            onClick={isFavorite ? onUnfavoriteToggle : onFavoriteToggle}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          />
+        </ContainerIcon>
+        <ContainerIcon>
+          <Image
+            src={isEditHovered ? "/images/edit-on.png" : "/images/edit-off.png"}
+            alt="edit"
+            width={25}
+            height={25}
+            id="edit-btn"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          />
+        </ContainerIcon>
       </ContainerFavorite>
     </ListContact>
   );

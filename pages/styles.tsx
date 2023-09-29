@@ -86,9 +86,10 @@ export const ImageContainer = styled.div`
   z-index: 2;
 
   @media (min-width: 320px) and (max-width: 768px) {
-    width: 100%;
+    width: 70%;
     height: 80%;
     margin-top: 1rem;
+    margin-bottom: 2rem;
     flex-direction: column;
     align-items: center;
     justify-content: start;
@@ -122,20 +123,8 @@ export const HeadlineText = styled.h1`
   margin-bottom: 1rem;
   text-transform: uppercase;
 
-  @media (max-width: 320px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     font-size: 2rem;
-  }
-
-  @media (min-width: 321px) and (max-width: 480px) {
-    font-size: 2.5rem;
-  }
-
-  @media (min-width: 481px) and (max-width: 768px) {
-    font-size: 3rem;
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 4rem;
   }
 `;
 
@@ -145,20 +134,8 @@ export const SubHeadlineText = styled.h2`
   color: black;
   margin-bottom: 1rem;
 
-  @media (max-width: 320px) {
-    font-size: 1rem;
-  }
-
-  @media (min-width: 321px) and (max-width: 480px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     font-size: 1.25rem;
-  }
-
-  @media (min-width: 481px) and (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 1.75rem;
   }
 `;
 
@@ -172,24 +149,9 @@ export const Span = styled.span`
   text-decoration-thickness: 0.25rem;
   text-underline-offset: 0.2rem;
 
-  @media (max-width: 320px) {
-    font-size: 1rem;
-    text-decoration-thickness: 0.1rem;
-  }
-
-  @media (min-width: 321px) and (max-width: 480px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     font-size: 1.25rem;
     text-decoration-thickness: 0.15rem;
-  }
-
-  @media (min-width: 481px) and (max-width: 768px) {
-    font-size: 1.5rem;
-    text-decoration-thickness: 0.2rem;
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    font-size: 1.75rem;
-    text-decoration-thickness: 0.25rem;
   }
 `;
 
@@ -200,19 +162,7 @@ export const FavoriteMessage = styled.p`
   margin-bottom: 1rem;
   text-align: center;
 
-  @media (max-width: 320px) {
-    font-size: 0.75rem;
-  }
-
-  @media (min-width: 321px) and (max-width: 480px) {
-    font-size: 1rem;
-  }
-
-  @media (min-width: 481px) and (max-width: 768px) {
-    font-size: 1.25rem;
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     font-size: 1.5rem;
   }
 `;
@@ -221,7 +171,7 @@ export const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     justify-content: center;
     align-items: center;
   }
@@ -234,7 +184,7 @@ export const ContainerList = styled.div`
   flex-direction: column;
   gap: 1rem;
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     flex-direction: column;
     font-size: 0.75rem;
     padding: 0rem 0rem 0 0rem;
@@ -246,7 +196,7 @@ export const Grid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     grid-template-columns: repeat(1, 1fr);
   }
 `;
@@ -258,7 +208,7 @@ export const ContainerHeadline = styled.div`
   gap: 1rem;
   justify-content: space-between;
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     flex-direction: column;
     font-size: 0.75rem;
     padding: 0rem 0rem 0 0rem;
@@ -282,8 +232,10 @@ export const SearchInput = styled.input`
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.25);
   }
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     font-size: 0.75rem;
+    width: 100%;
+    height: 2rem;
   }
 `;
 
@@ -293,6 +245,13 @@ export const ContainerAction = styled.div`
   justify-content: end;
   width: 50%;
   gap: 2rem;
+
+  @media (min-width: 320px) and (max-width: 1024px) {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.25rem;
+    justify-content: center;
+  }
 `;
 
 export const ContainerAdd = styled.div`
@@ -305,5 +264,38 @@ export const ContainerAdd = styled.div`
   &:hover {
     cursor: pointer;
     font-weight: 700;
+  }
+`;
+
+export const ContainerIcon = styled.div`
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const HeadlineContact = styled.h1`
+  font-size: 2rem;
+  margin-top: 1rem;
+
+  @media (max-width: 320px) {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  @media (min-width: 321px) and (max-width: 480px) {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 2rem;
+    text-align: center;
   }
 `;

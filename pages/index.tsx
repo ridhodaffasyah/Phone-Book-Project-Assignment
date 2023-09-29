@@ -6,6 +6,7 @@ import {
   ImageContainer,
   ImageStyle,
   HeadlineText,
+  HeadlineContact,
   SubHeadlineText,
   Span,
   ContainerTop,
@@ -17,6 +18,7 @@ import {
   SearchInput,
   ContainerAction,
   ContainerAdd,
+  ContainerIcon,
 } from "./styles";
 import LayoutPages from "@/components/Layout";
 import Pagination from "@/components/molecule/Pagination";
@@ -244,9 +246,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           </ImageContainer>
         </Container>
         <Container id="contact-list">
-          <div>
-            <h1>Favorite Contact</h1>
-          </div>
+          <HeadlineContact>Favorite Contact</HeadlineContact>
           {favoriteContacts.length === 0 ? (
             <FavoriteMessage>
               You don't have any favorite contact yet.
@@ -272,10 +272,17 @@ const Home: React.FC<HomeProps> = ({ data }) => {
             </ContainerList>
           )}
           <ContainerHeadline>
-            <h1>Contact List</h1>
+            <HeadlineContact>Contact List</HeadlineContact>
             <ContainerAction>
               <ContainerAdd>
-                <Image src="/images/add.png" alt="add" width={25} height={25} />
+                <ContainerIcon>
+                  <Image
+                    src="/images/add.png"
+                    alt="add"
+                    width={25}
+                    height={25}
+                  />
+                </ContainerIcon>
                 <span>Add Contact</span>
               </ContainerAdd>
               <SearchInput

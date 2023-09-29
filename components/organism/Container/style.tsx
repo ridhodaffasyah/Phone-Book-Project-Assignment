@@ -27,8 +27,8 @@ export const Container2 = styled.div`
   gap: 3rem;
   margin-bottom: 1rem;
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     flex-direction: column;
-    font-size: 0.75rem;
+    padding: 0 1rem 0 1rem;
   }
 `;

@@ -7,8 +7,8 @@ export const Logo = styled.div`
   max-width: 30%;
   height: auto;
 
-    @media (min-width: 320px) and (max-width: 768px) {
-        max-width: 100%;
-        justify-content: center;
-    }
+  @media (min-width: 320px) and (max-width: 1024px) {
+    max-width: 100%;
+    justify-content: center;
+  }
 `;

@@ -5,7 +5,7 @@ export const PaginationContainer = styled.div`
   justify-content: center;
   margin-bottom: 2rem;
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     justify-content: center;
     align-items: center;
   }

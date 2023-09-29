@@ -20,7 +20,7 @@ export const PageItem = styled.a`
     border-color: orange;
   }
 
-  @media (min-width: 320px) and (max-width: 768px) {
+  @media (min-width: 320px) and (max-width: 1024px) {
     padding: 0.5rem 0.75rem;
     margin: 0 0.25rem 2rem 0.25rem;
     border: 1px solid #ccc;
