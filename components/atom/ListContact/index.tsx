@@ -12,7 +12,7 @@ import {
 interface ListContactProps {
   id?: number;
   name?: string;
-  phone?: Array<string>;
+  phone: Array<string>;
   onFavoriteToggle?: () => void;
   onUnfavoriteToggle?: () => void;
   isFavorite?: boolean;
@@ -25,13 +25,22 @@ const ContactList: React.FC<ListContactProps> = ({
   onUnfavoriteToggle,
   isFavorite,
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const handleMouseEnter = () => {
-    setIsHovered(true);
+  const [isEditHovered, setIsEditHovered] = useState(false);
+  const [isFavoriteHovered, setIsFavoriteHovered] = useState(false);
+
+  const handleMouseEnter = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    if (event.currentTarget.id === "edit-btn") {
+      setIsEditHovered(true);
+    } else if (event.currentTarget.id === "favorite-btn") {
+      setIsFavoriteHovered(true);
+    }
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
+    setIsEditHovered(false);
+    setIsFavoriteHovered(false);
   };
 
   return (
@@ -51,25 +60,26 @@ const ContactList: React.FC<ListContactProps> = ({
         />
         <ContactContainer>
           <strong>{name}</strong>
-          <span>Phone Number:</span>
-          {phone?.length && (
-            <UList>
-              {phone?.map((item, index) => (
-                <List key={index}>
-                  {index + 1}. {item}
-                </List>
-              ))}
-            </UList>
+          {phone.length > 0 ? (
+            <>
+              <span>Phone Number:</span>
+              <UList>
+                {phone?.map((item, index) => (
+                  <List key={index}>
+                    {index + 1}. {item}
+                  </List>
+                ))}
+              </UList>
+            </>
+          ) : (
+            <span>Phone number not available</span>
           )}
         </ContactContainer>
       </ContainerInfo>
-      <ContainerFavorite
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <ContainerFavorite>
         <Image
           src={
-            isFavorite || isHovered
+            isFavorite || isFavoriteHovered
               ? "/images/star-on.png"
               : "/images/star-off.png"
           }
@@ -78,6 +88,17 @@ const ContactList: React.FC<ListContactProps> = ({
           width={25}
           height={25}
           onClick={isFavorite ? onUnfavoriteToggle : onFavoriteToggle}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+        <Image
+          src={isEditHovered ? "/images/edit-on.png" : "/images/edit-off.png"}
+          alt="edit"
+          width={25}
+          height={25}
+          id="edit-btn"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         />
       </ContainerFavorite>
     </ListContact>

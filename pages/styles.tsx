@@ -95,7 +95,7 @@ export const ImageContainer = styled.div`
   }
 `;
 
-export const Image = styled.img`
+export const ImageStyle = styled.img`
   width: 60%;
   height: auto;
   filter: drop-shadow(0 0 0.75rem rgba(0, 0, 0, 0.5));
@@ -248,5 +248,62 @@ export const Grid = styled.div`
 
   @media (min-width: 320px) and (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+export const ContainerHeadline = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+
+  @media (min-width: 320px) and (max-width: 768px) {
+    flex-direction: column;
+    font-size: 0.75rem;
+    padding: 0rem 0rem 0 0rem;
+  }
+`;
+
+export const SearchInput = styled.input`
+  width: 40%;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #000;
+  padding: 0 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #000;
+  outline: none;
+  transition: all 0.25s ease-in-out;
+
+  &:focus {
+    border: 1px solid #000;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.25);
+  }
+
+  @media (min-width: 320px) and (max-width: 768px) {
+    font-size: 0.75rem;
+  }
+`;
+
+export const ContainerAction = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  width: 50%;
+  gap: 2rem;
+`;
+
+export const ContainerAdd = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem;
+
+  &:hover {
+    cursor: pointer;
+    font-weight: 700;
   }
 `;

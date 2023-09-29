@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   BackgroundImage,
   ContentContainer,
   ImageContainer,
-  Image,
+  ImageStyle,
   HeadlineText,
   SubHeadlineText,
   Span,
@@ -12,6 +13,10 @@ import {
   ContainerList,
   Grid,
   FavoriteMessage,
+  ContainerHeadline,
+  SearchInput,
+  ContainerAction,
+  ContainerAdd,
 } from "./styles";
 import LayoutPages from "@/components/Layout";
 import Pagination from "@/components/molecule/Pagination";
@@ -97,12 +102,30 @@ interface FavoriteContact {
 }
 
 const Home: React.FC<HomeProps> = ({ data }) => {
-  const itemsPerPage = 10;
+  const itemsPerPage = 2;
   const [currentPage, setCurrentPage] = useState(1);
   const [contacts, setContacts] = useState(data as Contacts[]);
   const [favoriteContacts, setFavoriteContacts] = useState(
     [] as FavoriteContact[]
   );
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+
+    if (e.target.value === "") {
+      setContacts(data as Contacts[]);
+    } else {
+      const filteredContacts = data.filter((contact) => {
+        return (
+          contact.first_name.toLowerCase().includes(e.target.value) ||
+          contact.last_name.toLowerCase().includes(e.target.value)
+        );
+      });
+
+      setContacts(filteredContacts as Contacts[]);
+    }
+  };
 
   useEffect(() => {
     // Load favorite contacts from sessionStorage when the component mounts
@@ -202,6 +225,8 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     }
   };
 
+  console.log(contacts);
+
   return (
     <LayoutPages>
       <BackgroundImage />
@@ -215,7 +240,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
             </SubHeadlineText>
           </ContentContainer>
           <ImageContainer>
-            <Image src="/images/cartoon-2.png" alt="cartoon" />
+            <ImageStyle src="/images/cartoon-2.png" alt="cartoon" />
           </ImageContainer>
         </Container>
         <Container id="contact-list">
@@ -224,7 +249,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           </div>
           {favoriteContacts.length === 0 ? (
             <FavoriteMessage>
-              Belum ada kontak yang kamu favoritkan!
+              You don't have any favorite contact yet.
             </FavoriteMessage>
           ) : (
             <ContainerList>
@@ -246,20 +271,35 @@ const Home: React.FC<HomeProps> = ({ data }) => {
               </Grid>
             </ContainerList>
           )}
-          <div>
+          <ContainerHeadline>
             <h1>Contact List</h1>
-          </div>
+            <ContainerAction>
+              <ContainerAdd>
+                <Image src="/images/add.png" alt="add" width={25} height={25} />
+                <span>Add Contact</span>
+              </ContainerAdd>
+              <SearchInput
+                type="text"
+                placeholder="Search Contact..."
+                onInput={handleSearch}
+              />
+            </ContainerAction>
+          </ContainerHeadline>
           <ContainerList>
             <Grid>
-              {currentPageContacts.map((contact) => (
-                <ContactList
-                  key={contact.id}
-                  id={contact.id}
-                  name={contact.first_name + " " + contact.last_name}
-                  phone={contact.phones.map((phone) => phone.number)}
-                  onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
-                />
-              ))}
+              {contacts.length > 0 ? (
+                currentPageContacts.map((contact) => (
+                  <ContactList
+                    key={contact.id}
+                    id={contact.id}
+                    name={contact.first_name + " " + contact.last_name}
+                    phone={contact.phones.map((phone) => phone.number)}
+                    onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
+                  />
+                ))
+              ) : (
+                <span>No more contacts.</span>
+              )}
             </Grid>
           </ContainerList>
           <PaginationContainer>
