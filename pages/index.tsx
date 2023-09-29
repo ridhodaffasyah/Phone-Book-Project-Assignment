@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BackgroundImage,
   ContentContainer,
@@ -11,6 +11,7 @@ import {
   PaginationContainer,
   ContainerList,
   Grid,
+  FavoriteMessage,
 } from "./styles";
 import LayoutPages from "@/components/Layout";
 import Pagination from "@/components/molecule/Pagination";
@@ -52,13 +53,13 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      contacts: data.contact,
+      data: data.contact,
     },
   };
 }
 
 interface HomeProps {
-  contacts: [
+  data: [
     {
       created_at: string;
       first_name: string;
@@ -73,9 +74,53 @@ interface HomeProps {
   ];
 }
 
-const Home: React.FC<HomeProps> = ({ contacts }) => {
+interface Contacts {
+  id: number;
+  first_name: string;
+  last_name: string;
+  phones: [
+    {
+      number: string;
+    }
+  ];
+}
+
+interface FavoriteContact {
+  id: number;
+  first_name: string;
+  last_name: string;
+  phones: [
+    {
+      number: string;
+    }
+  ];
+}
+
+const Home: React.FC<HomeProps> = ({ data }) => {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [contacts, setContacts] = useState(data as Contacts[]);
+  const [favoriteContacts, setFavoriteContacts] = useState(
+    [] as FavoriteContact[]
+  );
+
+  useEffect(() => {
+    // Load favorite contacts from sessionStorage when the component mounts
+    const savedFavoriteContacts = localStorage.getItem("favoriteContacts");
+    if (savedFavoriteContacts) {
+      setFavoriteContacts(JSON.parse(savedFavoriteContacts));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Filter out the favorite contacts from the contacts list
+    const filteredContacts = contacts.filter(
+      (contact) =>
+        !favoriteContacts.some((favContact) => favContact.id === contact.id)
+    );
+
+    setContacts(filteredContacts);
+  }, [favoriteContacts]);
 
   // Calculate the start and end index for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -89,6 +134,73 @@ const Home: React.FC<HomeProps> = ({ contacts }) => {
   };
 
   const totalPages = Math.ceil(contacts.length / itemsPerPage);
+
+  const handleFavoriteToggle = (contactId: number) => {
+    // Check if the contact is already in the favorite list
+    const isAlreadyFavorite = favoriteContacts.some(
+      (contact) => contact.id === contactId
+    );
+
+    if (isAlreadyFavorite) {
+      // If it's already in the list, remove it from favoriteContacts
+      const updatedFavoriteContacts = favoriteContacts.filter(
+        (contact) => contact.id !== contactId
+      );
+      setFavoriteContacts(updatedFavoriteContacts);
+    } else {
+      // If it's not in the list, add it to favoriteContacts
+      const contactToAdd = contacts.find((contact) => contact.id === contactId);
+      if (contactToAdd) {
+        const updatedFavoriteContacts = [
+          ...favoriteContacts,
+          contactToAdd,
+        ].sort((a, b) => a.id - b.id);
+        setFavoriteContacts(updatedFavoriteContacts);
+
+        // Save favoriteContacts to localStorage
+        localStorage.setItem(
+          "favoriteContacts",
+          JSON.stringify(updatedFavoriteContacts)
+        );
+      }
+    }
+
+    // Remove it from the contacts list if it's not a favorite
+    const updatedContacts = contacts.filter(
+      (contact) => contact.id !== contactId
+    );
+
+    setContacts(updatedContacts);
+  };
+
+  const handleUnfavoriteToggle = (contactId: number) => {
+    // Check if the contact is in the favorite list
+    const isFavorite = favoriteContacts.some(
+      (contact) => contact.id === contactId
+    );
+
+    if (isFavorite) {
+      // If it's in the list, remove it from favoriteContacts
+      const updatedFavoriteContacts = favoriteContacts.filter(
+        (contact) => contact.id !== contactId
+      );
+      setFavoriteContacts(updatedFavoriteContacts);
+
+      // Save favoriteContacts to localStorage
+      localStorage.setItem(
+        "favoriteContacts",
+        JSON.stringify(updatedFavoriteContacts)
+      );
+
+      // Add it to the contacts list
+      const contactToAdd = favoriteContacts.find(
+        (contact) => contact.id === contactId
+      );
+      if (contactToAdd) {
+        setContacts([...contacts, contactToAdd]);
+      }
+    }
+  };
 
   return (
     <LayoutPages>
@@ -110,18 +222,30 @@ const Home: React.FC<HomeProps> = ({ contacts }) => {
           <div>
             <h1>Favorite Contact</h1>
           </div>
-          <ContainerList>
-            <Grid>
-              {currentPageContacts.map((contact) => (
-                <ContactList
-                  key={contact.id}
-                  id={contact.id}
-                  name={contact.first_name + " " + contact.last_name}
-                  phone={contact.phones.map((phone) => phone.number)}
-                />
-              ))}
-            </Grid>
-          </ContainerList>
+          {favoriteContacts.length === 0 ? (
+            <FavoriteMessage>
+              Belum ada kontak yang kamu favoritkan!
+            </FavoriteMessage>
+          ) : (
+            <ContainerList>
+              <Grid>
+                {favoriteContacts.map((contact) => (
+                  <ContactList
+                    key={contact.id}
+                    id={contact.id}
+                    name={contact.first_name + " " + contact.last_name}
+                    phone={contact.phones.map((phone) => phone.number)}
+                    isFavorite={favoriteContacts.some(
+                      (favContact) => favContact.id === contact.id
+                    )}
+                    onUnfavoriteToggle={() =>
+                      handleUnfavoriteToggle(contact.id)
+                    }
+                  />
+                ))}
+              </Grid>
+            </ContainerList>
+          )}
           <div>
             <h1>Contact List</h1>
           </div>
@@ -133,6 +257,7 @@ const Home: React.FC<HomeProps> = ({ contacts }) => {
                   id={contact.id}
                   name={contact.first_name + " " + contact.last_name}
                   phone={contact.phones.map((phone) => phone.number)}
+                  onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
                 />
               ))}
             </Grid>

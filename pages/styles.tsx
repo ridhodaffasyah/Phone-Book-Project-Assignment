@@ -193,6 +193,30 @@ export const Span = styled.span`
   }
 `;
 
+export const FavoriteMessage = styled.p`
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 1rem;
+  text-align: center;
+
+  @media (max-width: 320px) {
+    font-size: 0.75rem;
+  }
+
+  @media (min-width: 321px) and (max-width: 480px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 1.5rem;
+  }
+`;
+
 export const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
