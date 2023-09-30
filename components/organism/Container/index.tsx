@@ -1,11 +1,6 @@
 import React from "react";
 import { Container1, Container2 } from "./style";
-
-interface ContainerProps {
-  isLandingPage?: boolean;
-  children?: React.ReactNode;
-  id?: string;
-}
+import { ContainerProps } from "@/utils/interface";
 
 const Container: React.FC<ContainerProps> = ({
   isLandingPage,

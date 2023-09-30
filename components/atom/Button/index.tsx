@@ -1,11 +1,6 @@
 import React from "react";
 import { ButtonExplore, ButtonPrimary } from "./style";
-
-interface ButtonProps {
-  isExplore?: boolean;
-  text: string;
-  handleButton?: () => void;
-}
+import { ButtonProps } from "@/utils/interface";
 
 const Button: React.FC<ButtonProps> = ({ isExplore, text, handleButton }) => {
   return isExplore ? (

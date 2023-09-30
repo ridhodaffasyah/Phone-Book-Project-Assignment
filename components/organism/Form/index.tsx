@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import createApolloClient from "@/apollo-client";
+import {
+  ADD_CONTACT,
+  UPDATE_CONTACT,
+  UPDATE_PHONE_NUMBERS,
+  ADD_PHONE_NUMBER,
+  FETCH_UPDATED_CONTACT,
+} from "@/utils/api";
 import {
   Modal,
   ModalContent,
@@ -13,23 +20,15 @@ import {
   ContainerButton,
   Button,
 } from "./style";
-
-interface FormModalProps {
-  setIsShowModal: (value: boolean) => void;
-  updateContactsList: (value: any) => void;
-  updateEditedContact: (value: any) => void;
-  isEdit: boolean;
-  setIsEdit: (value: boolean) => void;
-  selectedContact: any;
-}
+import { FormModalProps } from "@/utils/interface";
 
 const FormModal: React.FC<FormModalProps> = ({
   setIsShowModal,
   updateContactsList,
   updateEditedContact,
-  isEdit,
   setIsEdit,
-  selectedContact, // Receive the selected contact data
+  isEdit,
+  selectedContact,
 }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -38,65 +37,10 @@ const FormModal: React.FC<FormModalProps> = ({
 
   const client = createApolloClient();
 
-  const [addContact] = useMutation(gql`
-    mutation AddContactWithPhones(
-      $first_name: String!
-      $last_name: String!
-      $phones: [phone_insert_input!]!
-    ) {
-      insert_contact(
-        objects: {
-          first_name: $first_name
-          last_name: $last_name
-          phones: { data: $phones }
-        }
-      ) {
-        returning {
-          first_name
-          last_name
-          id
-          phones {
-            number
-          }
-        }
-      }
-    }
-  `);
-
-  const [updateContact] = useMutation(gql`
-    mutation EditContactById($id: Int!, $_set: contact_set_input) {
-      update_contact_by_pk(pk_columns: { id: $id }, _set: $_set) {
-        id
-        first_name
-        last_name
-        phones {
-          number
-        }
-      }
-    }
-  `);
-
-  const [updatePhoneNumbers] = useMutation(gql`
-    mutation EditPhoneNumber(
-      $pk_columns: phone_pk_columns_input!
-      $new_phone_number: String!
-    ) {
-      update_phone_by_pk(
-        pk_columns: $pk_columns
-        _set: { number: $new_phone_number }
-      ) {
-        contact {
-          id
-          last_name
-          first_name
-          created_at
-          phones {
-            number
-          }
-        }
-      }
-    }
-  `);
+  const [addContact] = useMutation(ADD_CONTACT);
+  const [updateContact] = useMutation(UPDATE_CONTACT);
+  const [updatePhoneNumbers] = useMutation(UPDATE_PHONE_NUMBERS);
+  const [addPhoneNumber] = useMutation(ADD_PHONE_NUMBER);
 
   useEffect(() => {
     // Populate the form fields with the selected contact data when editing
@@ -164,23 +108,36 @@ const FormModal: React.FC<FormModalProps> = ({
           },
         });
 
-        // Update the contact's phone numbers individually using the updatePhoneNumbers mutation
-        for (let i = 0; i < phoneNumbers.length; i++) {
-          await updatePhoneNumbers({
+        /* Add a new phone number using the addPhoneNumber mutation
+        Check first if there's a new phone number to add or length phoneNumbers is greater than selectedContact.phones */
+        if (
+          phoneNumbers.length > selectedContact.phones.length ||
+          phoneNumbers.length < selectedContact.phones.length
+        ) {
+          await addPhoneNumber({
             variables: {
-              pk_columns: {
-                number: selectedContact.phones[i].number,
-                contact_id: selectedContact.id, // Replace with the correct ID field for phone numbers
-              },
-              new_phone_number: phoneNumbers[i].number,
+              contact_id: selectedContact.id,
+              phone_number: phoneNumbers[phoneNumbers.length - 1].number,
             },
           });
+        } else {
+          // Update the contact's phone numbers individually using the updatePhoneNumbers mutation
+          for (let i = 0; i < phoneNumbers.length; i++) {
+            await updatePhoneNumbers({
+              variables: {
+                pk_columns: {
+                  number: selectedContact.phones[i].number,
+                  contact_id: selectedContact.id,
+                },
+                new_phone_number: phoneNumbers[i].number,
+              },
+            });
+          }
         }
 
         // Fetch the updated contact data after the mutations
         const response = await fetchUpdatedContact(selectedContact.id);
 
-        // Call the updateEditedContact function with the updated contact data
         updateEditedContact(response);
       } else {
         // Add a new contact if it's in add mode
@@ -195,7 +152,6 @@ const FormModal: React.FC<FormModalProps> = ({
         // Extract the new contact data from the response
         const newContact = response.data.insert_contact.returning[0];
 
-        // Call the updateContactsList function with the new contact data
         updateContactsList(newContact);
       }
 
@@ -209,19 +165,7 @@ const FormModal: React.FC<FormModalProps> = ({
   // Function to fetch the updated contact data after mutations (replace with your actual GraphQL query)
   const fetchUpdatedContact = async (contactId: any) => {
     const response = await client.query({
-      query: gql`
-        query GetContactById($id: Int!) {
-          contact_by_pk(id: $id) {
-            id
-            first_name
-            last_name
-            phones {
-              id
-              number
-            }
-          }
-        }
-      `,
+      query: FETCH_UPDATED_CONTACT,
       variables: { id: contactId },
     });
 

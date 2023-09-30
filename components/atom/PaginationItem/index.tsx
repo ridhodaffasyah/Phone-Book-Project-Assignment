@@ -1,11 +1,6 @@
 import React from "react";
 import { PageItem } from "./style";
-
-interface PaginationItemProps {
-  page?: number;
-  className?: string;
-  onClick?: any;
-}
+import { PaginationItemProps } from "@/utils/interface";
 
 const PaginationItem: React.FC<PaginationItemProps> = ({
   page,

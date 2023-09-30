@@ -10,27 +10,15 @@ import {
   ContainerImage,
   ContainerIcon,
 } from "./style";
-
-interface ListContactProps {
-  id?: number;
-  name?: string;
-  phone: Array<string>;
-  onFavoriteToggle?: () => void;
-  onUnfavoriteToggle?: () => void;
-  onRemoveContact?: () => void;
-  isFavorite?: boolean;
-  isEdit: boolean;
-  setIsEdit: (value: boolean) => void;
-  onClick?: () => void;
-}
+import { ListContactProps } from "@/utils/interface";
 
 const ContactList: React.FC<ListContactProps> = ({
   name,
   phone,
+  isFavorite,
   onFavoriteToggle,
   onUnfavoriteToggle,
   onRemoveContact,
-  isFavorite,
   onClick,
 }) => {
   const [isEditHovered, setIsEditHovered] = useState(false);

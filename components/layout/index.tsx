@@ -3,10 +3,7 @@ import Image from "next/image";
 import Button from "../atom/Button";
 import Navbar from "../molecule/Navbar";
 import { Logo } from "./style";
-
-interface LayoutProps {
-  children: ReactNode;
-}
+import { LayoutProps } from "@/utils/interface";
 
 const LayoutPages: React.FC<LayoutProps> = ({ children }) => {
   const handleButtonExplore = () => {

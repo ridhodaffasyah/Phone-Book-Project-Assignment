@@ -22,41 +22,19 @@ import {
 } from "./styles";
 import LayoutPages from "@/components/Layout";
 import Pagination from "@/components/molecule/Pagination";
-import ContactList from "@/components/atom/ListContact";
+import ContactList from "@/components/molecule/ListContact";
 import Container from "@/components/organism/Container";
+import FormModal from "@/components/organism/Form";
 
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import createApolloClient from "../apollo-client";
-import FormModal from "@/components/molecule/Form";
+import { DELETE_CONTACT, GET_CONTACTS_LIST } from "@/utils/api";
+import { Contacts, FavoriteContact, HomeProps } from "@/utils/interface";
 
 export async function getServerSideProps() {
   const client = createApolloClient();
   const { data } = await client.query({
-    query: gql`
-      query GetContactList(
-        $distinct_on: [contact_select_column!]
-        $limit: Int
-        $offset: Int
-        $order_by: [contact_order_by!]
-        $where: contact_bool_exp
-      ) {
-        contact(
-          distinct_on: $distinct_on
-          limit: $limit
-          offset: $offset
-          order_by: $order_by
-          where: $where
-        ) {
-          created_at
-          first_name
-          id
-          last_name
-          phones {
-            number
-          }
-        }
-      }
-    `,
+    query: GET_CONTACTS_LIST,
   });
 
   return {
@@ -64,44 +42,6 @@ export async function getServerSideProps() {
       data: data.contact,
     },
   };
-}
-
-interface HomeProps {
-  data: [
-    {
-      created_at: string;
-      first_name: string;
-      id: number;
-      last_name: string;
-      phones: [
-        {
-          number: string;
-        }
-      ];
-    }
-  ];
-}
-
-interface Contacts {
-  id: number;
-  first_name: string;
-  last_name: string;
-  phones: [
-    {
-      number: string;
-    }
-  ];
-}
-
-interface FavoriteContact {
-  id: number;
-  first_name: string;
-  last_name: string;
-  phones: [
-    {
-      number: string;
-    }
-  ];
 }
 
 const Home: React.FC<HomeProps> = ({ data }) => {
@@ -116,17 +56,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
 
-  console.log(selectedContact);
-
-  const [deleteContact] = useMutation(gql`
-    mutation MyMutation($id: Int!) {
-      delete_contact_by_pk(id: $id) {
-        first_name
-        last_name
-        id
-      }
-    }
-  `);
+  const [deleteContact] = useMutation(DELETE_CONTACT);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -303,9 +233,9 @@ const Home: React.FC<HomeProps> = ({ data }) => {
   }
 
   const handleContactClick = (contact: any) => {
-    setSelectedContact(contact); // Update the selectedContact state with the clicked contact
-    setIsEdit(true); // Set edit mode to true
-    setIsShowModal(true); // Open the modal
+    setSelectedContact(contact);
+    setIsEdit(true);
+    setIsShowModal(true);
   };
 
   return (

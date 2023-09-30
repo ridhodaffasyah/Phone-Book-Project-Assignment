@@ -1,12 +1,7 @@
 import React from "react";
 import PaginationItem from "@/components/atom/PaginationItem";
 import { PaginationContainer } from "./style";
-
-interface Paginationrops {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
+import { Paginationrops } from "@/utils/interface";
 
 const Pagination: React.FC<Paginationrops> = ({
   currentPage,
