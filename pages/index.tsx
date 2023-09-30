@@ -281,6 +281,27 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     setContacts([...contacts, newContact]);
   };
 
+  const updateEditedContact = (updatedContact: any) => {
+    // Update the contacts state with the updated contact
+    const updatedContacts = contacts.map((contact) =>
+      contact.id === updatedContact.id ? updatedContact : contact
+    );
+
+    // Update the favoriteContacts state with the updated contact
+    const updatedFavoriteContacts = favoriteContacts.map((contact) =>
+      contact.id === updatedContact.id ? updatedContact : contact
+    );
+
+    // Save favoriteContacts to localStorage
+    localStorage.setItem(
+      "favoriteContacts",
+      JSON.stringify(updatedFavoriteContacts)
+    );
+
+    setFavoriteContacts(updatedFavoriteContacts);
+    setContacts(updatedContacts);
+  }
+
   const handleContactClick = (contact: any) => {
     setSelectedContact(contact); // Update the selectedContact state with the clicked contact
     setIsEdit(true); // Set edit mode to true
@@ -318,6 +339,8 @@ const Home: React.FC<HomeProps> = ({ data }) => {
                     id={contact.id}
                     name={contact.first_name + " " + contact.last_name}
                     phone={contact.phones.map((phone) => phone.number)}
+                    isFavorite={favoriteContacts.some(
+                      (favContact) => favContact.id === contact.id)}
                     onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
                     onUnfavoriteToggle={() =>
                       handleUnfavoriteToggle(contact.id)
@@ -361,6 +384,9 @@ const Home: React.FC<HomeProps> = ({ data }) => {
                     id={contact.id}
                     name={contact.first_name + " " + contact.last_name}
                     phone={contact.phones.map((phone) => phone.number)}
+                    isFavorite={favoriteContacts.some(
+                      (favContact) => favContact.id === contact.id
+                    )}
                     onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
                     onUnfavoriteToggle={() =>
                       handleUnfavoriteToggle(contact.id)
@@ -389,6 +415,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
         <FormModal
           setIsShowModal={setIsShowModal}
           updateContactsList={updateContactsList}
+          updateEditedContact={updateEditedContact}
           isEdit={isEdit}
           setIsEdit={setIsEdit}
           selectedContact={selectedContact}

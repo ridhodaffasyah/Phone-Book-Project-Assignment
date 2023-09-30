@@ -15,7 +15,8 @@ import {
 
 interface FormModalProps {
   setIsShowModal: (value: boolean) => void;
-  updateContactsList: (value: any) => void;
+    updateContactsList: (value: any) => void;
+    updateEditedContact: (value: any) => void;
   isEdit: boolean;
   setIsEdit: (value: boolean) => void;
   selectedContact: any;
@@ -23,7 +24,8 @@ interface FormModalProps {
 
 const FormModal: React.FC<FormModalProps> = ({
   setIsShowModal,
-  updateContactsList,
+    updateContactsList,
+  updateEditedContact,
   isEdit,
   setIsEdit,
   selectedContact, // Receive the selected contact data
@@ -59,16 +61,8 @@ const FormModal: React.FC<FormModalProps> = ({
   `);
 
   const [updateContact] = useMutation(gql`
-    mutation UpdateContact(
-      $id: Int!
-      $first_name: String!
-      $last_name: String!
-      $phones: [phone_insert_input!]!
-    ) {
-      update_contact_by_pk(
-        pk_columns: { id: $id }
-        _set: { first_name: $first_name, last_name: $last_name }
-      ) {
+    mutation EditContactById($id: Int!, $_set: contact_set_input) {
+      update_contact_by_pk(pk_columns: { id: $id }, _set: $_set) {
         id
         first_name
         last_name
@@ -141,9 +135,7 @@ const FormModal: React.FC<FormModalProps> = ({
         const response = await updateContact({
           variables: {
             id: selectedContact.id,
-            first_name: firstName,
-            last_name: lastName,
-            phones: phoneNumbers,
+            _set: { first_name: firstName, last_name: lastName },
           },
         });
 
@@ -151,7 +143,7 @@ const FormModal: React.FC<FormModalProps> = ({
         const updatedContact = response.data.update_contact_by_pk;
 
         // Call the updateContactsList function with the updated contact data
-        updateContactsList(updatedContact);
+        updateEditedContact(updatedContact);
       } else {
         // Add a new contact if it's in add mode
         const response = await addContact({
