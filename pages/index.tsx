@@ -25,7 +25,7 @@ import Pagination from "@/components/molecule/Pagination";
 import ContactList from "@/components/atom/ListContact";
 import Container from "@/components/organism/Container";
 
-import { gql } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import createApolloClient from "../apollo-client";
 import FormModal from "@/components/molecule/Form";
 
@@ -113,6 +113,16 @@ const Home: React.FC<HomeProps> = ({ data }) => {
   );
   const [search, setSearch] = useState("");
   const [isShowModal, setIsShowModal] = useState(false);
+
+  const [deleteContact] = useMutation(gql`
+    mutation MyMutation($id: Int!) {
+      delete_contact_by_pk(id: $id) {
+        first_name
+        last_name
+        id
+      }
+    }
+  `);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -233,24 +243,38 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     setIsShowModal(true);
   };
 
-  const handleRemoveContact = (contactId: number) => {
-    // Remove it from the favorite contacts if it's there
-    const updatedFavoriteContacts = favoriteContacts.filter(
-      (contact) => contact.id !== contactId
+  const handleRemoveContact = async (contactId: number) => {
+    const isFavorite = favoriteContacts.some(
+      (contact) => contact.id === contactId
     );
-    setFavoriteContacts(updatedFavoriteContacts);
 
-    // Save updated favoriteContacts to localStorage
-    localStorage.setItem(
-      "favoriteContacts",
-      JSON.stringify(updatedFavoriteContacts)
-    );
+    if (isFavorite) {
+      // If it's in the list, remove it from favoriteContacts
+      const updatedFavoriteContacts = favoriteContacts.filter(
+        (contact) => contact.id !== contactId
+      );
+      setFavoriteContacts(updatedFavoriteContacts);
+
+      // Save favoriteContacts to localStorage
+      localStorage.setItem(
+        "favoriteContacts",
+        JSON.stringify(updatedFavoriteContacts)
+      );
+    }
 
     // Remove it from the contacts list
     const updatedContacts = contacts.filter(
       (contact) => contact.id !== contactId
     );
     setContacts(updatedContacts);
+
+    // Remove it from the database
+    await deleteContact({ variables: { id: contactId } });
+  };
+
+  const updateContactsList = (newContact: any) => {
+    // Update the contacts state with the new contact
+    setContacts([...contacts, newContact]);
   };
 
   console.log(favoriteContacts);
@@ -347,7 +371,12 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           </PaginationContainer>
         </Container>
       </ContainerTop>
-      {isShowModal && <FormModal setIsShowModal={setIsShowModal} />}
+      {isShowModal && (
+        <FormModal
+          setIsShowModal={setIsShowModal}
+          updateContactsList={updateContactsList}
+        />
+      )}
     </LayoutPages>
   );
 };

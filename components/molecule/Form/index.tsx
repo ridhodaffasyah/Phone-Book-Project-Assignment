@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
 import {
   Modal,
   ModalContent,
@@ -14,13 +15,42 @@ import {
 
 interface FormModalProps {
   setIsShowModal: (value: boolean) => void;
+  updateContactsList: (value: any) => void;
 }
 
-const FormModal: React.FC<FormModalProps> = ({ setIsShowModal }) => {
+const FormModal: React.FC<FormModalProps> = ({
+  setIsShowModal,
+  updateContactsList,
+}) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [phoneNumbers, setPhoneNumbers] = useState([""]);
+  const [phoneNumbers, setPhoneNumbers] = useState([{ number: "" }]);
   const [visible, setVisible] = useState(true);
+
+  const [addContact] = useMutation(gql`
+    mutation AddContactWithPhones(
+      $first_name: String!
+      $last_name: String!
+      $phones: [phone_insert_input!]!
+    ) {
+      insert_contact(
+        objects: {
+          first_name: $first_name
+          last_name: $last_name
+          phones: { data: $phones }
+        }
+      ) {
+        returning {
+          first_name
+          last_name
+          id
+          phones {
+            number
+          }
+        }
+      }
+    }
+  `);
 
   const handleCloseModal = () => {
     setVisible(false);
@@ -30,7 +60,7 @@ const FormModal: React.FC<FormModalProps> = ({ setIsShowModal }) => {
   };
 
   const handleAddPhoneNumber = () => {
-    setPhoneNumbers([...phoneNumbers, ""]);
+    setPhoneNumbers([...phoneNumbers, { number: "" }]);
   };
 
   const handleRemovePhoneNumber = (index: number) => {
@@ -41,11 +71,11 @@ const FormModal: React.FC<FormModalProps> = ({ setIsShowModal }) => {
 
   const handlePhoneNumberChange = (index: number, value: string) => {
     const updatedPhoneNumbers = [...phoneNumbers];
-    updatedPhoneNumbers[index] = value;
+    updatedPhoneNumbers[index] = { number: value };
     setPhoneNumbers(updatedPhoneNumbers);
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Regular expression to check for special characters
@@ -63,10 +93,26 @@ const FormModal: React.FC<FormModalProps> = ({ setIsShowModal }) => {
       return;
     }
 
-    // Your logic to submit the form when the first name and last name are valid
-    console.log("Form submitted with First Name:", firstName);
-    console.log("Last Name:", lastName);
-    console.log("Phone Numbers:", phoneNumbers);
+    try {
+      const response = await addContact({
+        variables: {
+          first_name: firstName,
+          last_name: lastName,
+          phones: phoneNumbers,
+        },
+      });
+
+      // Extract the new contact data from the response (adjust this based on your GraphQL schema)
+      const newContact = response.data.insert_contact.returning[0];
+
+      // Call the updateContactsList function with the new contact data
+      updateContactsList(newContact);
+
+      // Close the modal
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error adding contact:", error);
+    }
   };
 
   return (
@@ -106,7 +152,7 @@ const FormModal: React.FC<FormModalProps> = ({ setIsShowModal }) => {
                     type="text"
                     id={`phone-number-${index}`}
                     placeholder="Phone Number"
-                    value={phoneNumber}
+                    value={phoneNumber.number}
                     onChange={(e) =>
                       handlePhoneNumberChange(index, e.target.value)
                     }
