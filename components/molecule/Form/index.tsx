@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import {
   Modal,
@@ -16,11 +16,17 @@ import {
 interface FormModalProps {
   setIsShowModal: (value: boolean) => void;
   updateContactsList: (value: any) => void;
+  isEdit: boolean;
+  setIsEdit: (value: boolean) => void;
+  selectedContact: any;
 }
 
 const FormModal: React.FC<FormModalProps> = ({
   setIsShowModal,
   updateContactsList,
+  isEdit,
+  setIsEdit,
+  selectedContact, // Receive the selected contact data
 }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -52,10 +58,46 @@ const FormModal: React.FC<FormModalProps> = ({
     }
   `);
 
+  const [updateContact] = useMutation(gql`
+    mutation UpdateContact(
+      $id: Int!
+      $first_name: String!
+      $last_name: String!
+      $phones: [phone_insert_input!]!
+    ) {
+      update_contact_by_pk(
+        pk_columns: { id: $id }
+        _set: { first_name: $first_name, last_name: $last_name }
+      ) {
+        id
+        first_name
+        last_name
+        phones {
+          number
+        }
+      }
+    }
+  `);
+
+  useEffect(() => {
+    // Populate the form fields with the selected contact data when editing
+    if (isEdit && selectedContact) {
+      setFirstName(selectedContact.first_name);
+      setLastName(selectedContact.last_name);
+      setPhoneNumbers(selectedContact.phones);
+    } else {
+      // Clear the form fields when adding a new contact
+      setFirstName("");
+      setLastName("");
+      setPhoneNumbers([{ number: "" }]);
+    }
+  }, [isEdit, selectedContact]);
+
   const handleCloseModal = () => {
     setVisible(false);
     setTimeout(() => {
       setIsShowModal(false);
+      setIsEdit(false);
     }, 300);
   };
 
@@ -94,24 +136,43 @@ const FormModal: React.FC<FormModalProps> = ({
     }
 
     try {
-      const response = await addContact({
-        variables: {
-          first_name: firstName,
-          last_name: lastName,
-          phones: phoneNumbers,
-        },
-      });
+      if (isEdit && selectedContact) {
+        // Update the existing contact if it's in edit mode
+        const response = await updateContact({
+          variables: {
+            id: selectedContact.id,
+            first_name: firstName,
+            last_name: lastName,
+            phones: phoneNumbers,
+          },
+        });
 
-      // Extract the new contact data from the response (adjust this based on your GraphQL schema)
-      const newContact = response.data.insert_contact.returning[0];
+        // Extract the updated contact data from the response
+        const updatedContact = response.data.update_contact_by_pk;
 
-      // Call the updateContactsList function with the new contact data
-      updateContactsList(newContact);
+        // Call the updateContactsList function with the updated contact data
+        updateContactsList(updatedContact);
+      } else {
+        // Add a new contact if it's in add mode
+        const response = await addContact({
+          variables: {
+            first_name: firstName,
+            last_name: lastName,
+            phones: phoneNumbers,
+          },
+        });
+
+        // Extract the new contact data from the response
+        const newContact = response.data.insert_contact.returning[0];
+
+        // Call the updateContactsList function with the new contact data
+        updateContactsList(newContact);
+      }
 
       // Close the modal
       handleCloseModal();
     } catch (error) {
-      console.error("Error adding contact:", error);
+      console.error("Error adding/updating contact:", error);
     }
   };
 
@@ -120,7 +181,7 @@ const FormModal: React.FC<FormModalProps> = ({
       <ModalContent>
         <CloseButton onClick={handleCloseModal}>&times;</CloseButton>
         <Container>
-          <h1>Add Contact</h1>
+          {isEdit ? <h2>Edit Contact</h2> : <h2>Add Contact</h2>}
           <Form onSubmit={handleFormSubmit}>
             <ContainerInput>
               <Label htmlFor="first-name">First Name</Label>
@@ -159,7 +220,7 @@ const FormModal: React.FC<FormModalProps> = ({
                   />
                   <Button
                     type="button"
-                    onClick={() => handleRemovePhoneNumber(index)} // Call the remove function with the index
+                    onClick={() => handleRemovePhoneNumber(index)}
                   >
                     Remove
                   </Button>
@@ -170,7 +231,9 @@ const FormModal: React.FC<FormModalProps> = ({
             <Button type="button" onClick={handleAddPhoneNumber}>
               Add Phone Number
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">
+              {isEdit ? "Update Contact" : "Add Contact"}
+            </Button>
           </Form>
         </Container>
       </ModalContent>

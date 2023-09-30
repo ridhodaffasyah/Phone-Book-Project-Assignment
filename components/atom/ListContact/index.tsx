@@ -19,6 +19,9 @@ interface ListContactProps {
   onUnfavoriteToggle?: () => void;
   onRemoveContact?: () => void;
   isFavorite?: boolean;
+  isEdit: boolean;
+  setIsEdit: (value: boolean) => void;
+  onClick?: () => void;
 }
 
 const ContactList: React.FC<ListContactProps> = ({
@@ -28,31 +31,37 @@ const ContactList: React.FC<ListContactProps> = ({
   onUnfavoriteToggle,
   onRemoveContact,
   isFavorite,
+  setIsEdit,
+  onClick,
 }) => {
   const [isEditHovered, setIsEditHovered] = useState(false);
-  const [isFavoriteHovered, setIsFavoriteHovered] = useState(false);
   const [isDeleteHovered, setIsDeleteHovered] = useState(false);
+  const [isFavoriteHovered, setIsFavoriteHovered] = useState(false);
 
   const handleMouseEnter = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     if (event.currentTarget.id === "edit-btn") {
       setIsEditHovered(true);
-    } else if (event.currentTarget.id === "favorite-btn") {
-      setIsFavoriteHovered(true);
     } else if (event.currentTarget.id === "delete-btn") {
       setIsDeleteHovered(true);
+    } else if (event.currentTarget.id === "favorite-btn") {
+      setIsFavoriteHovered(true);
     }
   };
 
   const handleMouseLeave = () => {
     setIsEditHovered(false);
-    setIsFavoriteHovered(false);
     setIsDeleteHovered(false);
+    setIsFavoriteHovered(false);
+  };
+
+  const handleEditClick = () => {
+    setIsEdit(true);
   };
 
   return (
-    <ListContact>
+    <ListContact onClick={onClick}>
       <ContainerInfo>
         <ContainerImage>
           <Image
@@ -87,18 +96,14 @@ const ContactList: React.FC<ListContactProps> = ({
       <ContainerFavorite>
         <ContainerIcon>
           <Image
-            src={
-              isFavorite || isFavoriteHovered
-                ? "/images/star-on.png"
-                : "/images/star-off.png"
-            }
+            src={(isFavorite || isFavoriteHovered) ? "/images/star-on.png" : "/images/star-off.png"}
             alt="star"
             id="favorite-btn"
             width={20}
             height={20}
-            onClick={isFavorite ? onUnfavoriteToggle : onFavoriteToggle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={isFavorite ? onUnfavoriteToggle : onFavoriteToggle}
           />
         </ContainerIcon>
         <ContainerIcon>
@@ -110,22 +115,21 @@ const ContactList: React.FC<ListContactProps> = ({
             id="edit-btn"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={handleEditClick}
           />
         </ContainerIcon>
         <ContainerIcon>
           <Image
             src={
-              isDeleteHovered
-                ? "/images/delete-on.png"
-                : "/images/delete-off.png"
+              isDeleteHovered ? "/images/delete-on.png" : "/images/delete-off.png"
             }
             alt="delete"
             width={20}
             height={20}
             id="delete-btn"
-            onClick={onRemoveContact}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={onRemoveContact}
           />
         </ContainerIcon>
       </ContainerFavorite>

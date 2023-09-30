@@ -113,6 +113,10 @@ const Home: React.FC<HomeProps> = ({ data }) => {
   );
   const [search, setSearch] = useState("");
   const [isShowModal, setIsShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
+
+  console.log(selectedContact);
 
   const [deleteContact] = useMutation(gql`
     mutation MyMutation($id: Int!) {
@@ -277,8 +281,11 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     setContacts([...contacts, newContact]);
   };
 
-  console.log(favoriteContacts);
-  console.log(contacts);
+  const handleContactClick = (contact: any) => {
+    setSelectedContact(contact); // Update the selectedContact state with the clicked contact
+    setIsEdit(true); // Set edit mode to true
+    setIsShowModal(true); // Open the modal
+  };
 
   return (
     <LayoutPages>
@@ -311,13 +318,14 @@ const Home: React.FC<HomeProps> = ({ data }) => {
                     id={contact.id}
                     name={contact.first_name + " " + contact.last_name}
                     phone={contact.phones.map((phone) => phone.number)}
-                    isFavorite={favoriteContacts.some(
-                      (favContact) => favContact.id === contact.id
-                    )}
+                    onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
                     onUnfavoriteToggle={() =>
                       handleUnfavoriteToggle(contact.id)
                     }
                     onRemoveContact={() => handleRemoveContact(contact.id)}
+                    isEdit={isEdit}
+                    setIsEdit={setIsEdit}
+                    onClick={() => handleContactClick(contact)}
                   />
                 ))}
               </Grid>
@@ -354,7 +362,13 @@ const Home: React.FC<HomeProps> = ({ data }) => {
                     name={contact.first_name + " " + contact.last_name}
                     phone={contact.phones.map((phone) => phone.number)}
                     onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
+                    onUnfavoriteToggle={() =>
+                      handleUnfavoriteToggle(contact.id)
+                    }
                     onRemoveContact={() => handleRemoveContact(contact.id)}
+                    isEdit={isEdit}
+                    setIsEdit={setIsEdit}
+                    onClick={() => handleContactClick(contact)}
                   />
                 ))
               ) : (
@@ -371,10 +385,13 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           </PaginationContainer>
         </Container>
       </ContainerTop>
-      {isShowModal && (
+      {(isShowModal || isEdit) && (
         <FormModal
           setIsShowModal={setIsShowModal}
           updateContactsList={updateContactsList}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          selectedContact={selectedContact}
         />
       )}
     </LayoutPages>
