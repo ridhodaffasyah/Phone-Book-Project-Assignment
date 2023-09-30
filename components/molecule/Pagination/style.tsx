@@ -6,6 +6,7 @@ export const PaginationContainer = styled.div`
   margin-bottom: 2rem;
 
   @media (min-width: 320px) and (max-width: 1024px) {
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
   }
