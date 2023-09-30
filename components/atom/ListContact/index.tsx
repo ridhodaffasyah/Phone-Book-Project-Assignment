@@ -17,6 +17,7 @@ interface ListContactProps {
   phone: Array<string>;
   onFavoriteToggle?: () => void;
   onUnfavoriteToggle?: () => void;
+  onRemoveContact?: () => void;
   isFavorite?: boolean;
 }
 
@@ -25,10 +26,12 @@ const ContactList: React.FC<ListContactProps> = ({
   phone,
   onFavoriteToggle,
   onUnfavoriteToggle,
+  onRemoveContact,
   isFavorite,
 }) => {
   const [isEditHovered, setIsEditHovered] = useState(false);
   const [isFavoriteHovered, setIsFavoriteHovered] = useState(false);
+  const [isDeleteHovered, setIsDeleteHovered] = useState(false);
 
   const handleMouseEnter = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -37,12 +40,15 @@ const ContactList: React.FC<ListContactProps> = ({
       setIsEditHovered(true);
     } else if (event.currentTarget.id === "favorite-btn") {
       setIsFavoriteHovered(true);
+    } else if (event.currentTarget.id === "delete-btn") {
+      setIsDeleteHovered(true);
     }
   };
 
   const handleMouseLeave = () => {
     setIsEditHovered(false);
     setIsFavoriteHovered(false);
+    setIsDeleteHovered(false);
   };
 
   return (
@@ -88,8 +94,8 @@ const ContactList: React.FC<ListContactProps> = ({
             }
             alt="star"
             id="favorite-btn"
-            width={25}
-            height={25}
+            width={20}
+            height={20}
             onClick={isFavorite ? onUnfavoriteToggle : onFavoriteToggle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
@@ -99,9 +105,25 @@ const ContactList: React.FC<ListContactProps> = ({
           <Image
             src={isEditHovered ? "/images/edit-on.png" : "/images/edit-off.png"}
             alt="edit"
-            width={25}
-            height={25}
+            width={20}
+            height={20}
             id="edit-btn"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          />
+        </ContainerIcon>
+        <ContainerIcon>
+          <Image
+            src={
+              isDeleteHovered
+                ? "/images/delete-on.png"
+                : "/images/delete-off.png"
+            }
+            alt="delete"
+            width={20}
+            height={20}
+            id="delete-btn"
+            onClick={onRemoveContact}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />

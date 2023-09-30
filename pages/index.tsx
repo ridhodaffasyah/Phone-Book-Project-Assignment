@@ -27,6 +27,7 @@ import Container from "@/components/organism/Container";
 
 import { gql } from "@apollo/client";
 import createApolloClient from "../apollo-client";
+import FormModal from "@/components/molecule/Form";
 
 export async function getServerSideProps() {
   const client = createApolloClient();
@@ -104,13 +105,14 @@ interface FavoriteContact {
 }
 
 const Home: React.FC<HomeProps> = ({ data }) => {
-  const itemsPerPage = 2;
+  const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [contacts, setContacts] = useState(data as Contacts[]);
   const [favoriteContacts, setFavoriteContacts] = useState(
     [] as FavoriteContact[]
   );
   const [search, setSearch] = useState("");
+  const [isShowModal, setIsShowModal] = useState(false);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -227,6 +229,31 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     }
   };
 
+  const handleAddContact = () => {
+    setIsShowModal(true);
+  };
+
+  const handleRemoveContact = (contactId: number) => {
+    // Remove it from the favorite contacts if it's there
+    const updatedFavoriteContacts = favoriteContacts.filter(
+      (contact) => contact.id !== contactId
+    );
+    setFavoriteContacts(updatedFavoriteContacts);
+
+    // Save updated favoriteContacts to localStorage
+    localStorage.setItem(
+      "favoriteContacts",
+      JSON.stringify(updatedFavoriteContacts)
+    );
+
+    // Remove it from the contacts list
+    const updatedContacts = contacts.filter(
+      (contact) => contact.id !== contactId
+    );
+    setContacts(updatedContacts);
+  };
+
+  console.log(favoriteContacts);
   console.log(contacts);
 
   return (
@@ -266,6 +293,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
                     onUnfavoriteToggle={() =>
                       handleUnfavoriteToggle(contact.id)
                     }
+                    onRemoveContact={() => handleRemoveContact(contact.id)}
                   />
                 ))}
               </Grid>
@@ -274,7 +302,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           <ContainerHeadline>
             <HeadlineContact>Contact List</HeadlineContact>
             <ContainerAction>
-              <ContainerAdd>
+              <ContainerAdd onClick={handleAddContact}>
                 <ContainerIcon>
                   <Image
                     src="/images/add.png"
@@ -302,6 +330,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
                     name={contact.first_name + " " + contact.last_name}
                     phone={contact.phones.map((phone) => phone.number)}
                     onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
+                    onRemoveContact={() => handleRemoveContact(contact.id)}
                   />
                 ))
               ) : (
@@ -318,6 +347,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           </PaginationContainer>
         </Container>
       </ContainerTop>
+      {isShowModal && <FormModal setIsShowModal={setIsShowModal} />}
     </LayoutPages>
   );
 };

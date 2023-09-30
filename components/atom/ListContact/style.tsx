@@ -64,6 +64,7 @@ export const ContainerFavorite = styled.div`
   @media (min-width: 320px) and (max-width: 1024px) {
     flex-direction: column;
     padding: 0;
+    gap: 0.5rem;
   }
 `;
 
@@ -81,8 +82,8 @@ export const ContainerImage = styled.div`
 `;
 
 export const ContainerIcon = styled.div`
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
