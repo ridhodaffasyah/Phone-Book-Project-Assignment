@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
+import createApolloClient from "@/apollo-client";
 import {
   Modal,
   ModalContent,
@@ -15,8 +16,8 @@ import {
 
 interface FormModalProps {
   setIsShowModal: (value: boolean) => void;
-    updateContactsList: (value: any) => void;
-    updateEditedContact: (value: any) => void;
+  updateContactsList: (value: any) => void;
+  updateEditedContact: (value: any) => void;
   isEdit: boolean;
   setIsEdit: (value: boolean) => void;
   selectedContact: any;
@@ -24,7 +25,7 @@ interface FormModalProps {
 
 const FormModal: React.FC<FormModalProps> = ({
   setIsShowModal,
-    updateContactsList,
+  updateContactsList,
   updateEditedContact,
   isEdit,
   setIsEdit,
@@ -34,6 +35,8 @@ const FormModal: React.FC<FormModalProps> = ({
   const [lastName, setLastName] = useState("");
   const [phoneNumbers, setPhoneNumbers] = useState([{ number: "" }]);
   const [visible, setVisible] = useState(true);
+
+  const client = createApolloClient();
 
   const [addContact] = useMutation(gql`
     mutation AddContactWithPhones(
@@ -68,6 +71,28 @@ const FormModal: React.FC<FormModalProps> = ({
         last_name
         phones {
           number
+        }
+      }
+    }
+  `);
+
+  const [updatePhoneNumbers] = useMutation(gql`
+    mutation EditPhoneNumber(
+      $pk_columns: phone_pk_columns_input!
+      $new_phone_number: String!
+    ) {
+      update_phone_by_pk(
+        pk_columns: $pk_columns
+        _set: { number: $new_phone_number }
+      ) {
+        contact {
+          id
+          last_name
+          first_name
+          created_at
+          phones {
+            number
+          }
         }
       }
     }
@@ -131,19 +156,32 @@ const FormModal: React.FC<FormModalProps> = ({
 
     try {
       if (isEdit && selectedContact) {
-        // Update the existing contact if it's in edit mode
-        const response = await updateContact({
+        // Update the contact's name using the updateContact mutation
+        await updateContact({
           variables: {
             id: selectedContact.id,
             _set: { first_name: firstName, last_name: lastName },
           },
         });
 
-        // Extract the updated contact data from the response
-        const updatedContact = response.data.update_contact_by_pk;
+        // Update the contact's phone numbers individually using the updatePhoneNumbers mutation
+        for (let i = 0; i < phoneNumbers.length; i++) {
+          await updatePhoneNumbers({
+            variables: {
+              pk_columns: {
+                number: selectedContact.phones[i].number,
+                contact_id: selectedContact.id, // Replace with the correct ID field for phone numbers
+              },
+              new_phone_number: phoneNumbers[i].number,
+            },
+          });
+        }
 
-        // Call the updateContactsList function with the updated contact data
-        updateEditedContact(updatedContact);
+        // Fetch the updated contact data after the mutations
+        const response = await fetchUpdatedContact(selectedContact.id);
+
+        // Call the updateEditedContact function with the updated contact data
+        updateEditedContact(response);
       } else {
         // Add a new contact if it's in add mode
         const response = await addContact({
@@ -166,6 +204,28 @@ const FormModal: React.FC<FormModalProps> = ({
     } catch (error) {
       console.error("Error adding/updating contact:", error);
     }
+  };
+
+  // Function to fetch the updated contact data after mutations (replace with your actual GraphQL query)
+  const fetchUpdatedContact = async (contactId: any) => {
+    const response = await client.query({
+      query: gql`
+        query GetContactById($id: Int!) {
+          contact_by_pk(id: $id) {
+            id
+            first_name
+            last_name
+            phones {
+              id
+              number
+            }
+          }
+        }
+      `,
+      variables: { id: contactId },
+    });
+
+    return response.data.contact_by_pk;
   };
 
   return (
