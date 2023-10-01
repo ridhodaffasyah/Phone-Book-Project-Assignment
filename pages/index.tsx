@@ -20,7 +20,7 @@ import {
   ContainerAdd,
   ContainerIcon,
 } from "./styles";
-import LayoutPages from "@/components/Layout";
+import LayoutPages from "@/components/layout";
 import Pagination from "@/components/molecule/Pagination";
 import ContactList from "@/components/molecule/ListContact";
 import Container from "@/components/organism/Container";
