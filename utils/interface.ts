@@ -12,7 +12,7 @@ export interface HomeProps {
       ];
     }
   ];
-};
+}
 
 export interface Contacts {
   id: number;
@@ -23,7 +23,7 @@ export interface Contacts {
       number: string;
     }
   ];
-};
+}
 
 export interface FavoriteContact {
   id: number;
@@ -34,59 +34,65 @@ export interface FavoriteContact {
       number: string;
     }
   ];
-};
+}
 
 export interface FormModalProps {
   setIsShowModal: (value: boolean) => void;
   updateContactsList: (value: any) => void;
   updateEditedContact: (value: any) => void;
+  showErrorMessage: (value: string) => void;
+  showSuccessMessage: (value: string) => void;
   setIsEdit: (value: boolean) => void;
   isEdit: boolean;
   selectedContact: any;
-};
+}
 
 export interface ListContactProps {
   id?: number;
   name?: string;
   phone: Array<string>;
+  isFavorite?: boolean;
+  isEdit: boolean;
   onFavoriteToggle?: () => void;
   onUnfavoriteToggle?: () => void;
   onRemoveContact?: () => void;
-  isFavorite?: boolean;
-  isEdit: boolean;
   setIsEdit: (value: boolean) => void;
   onClick?: () => void;
-};
-
+}
 
 export interface PaginationItemProps {
   page?: number;
   className?: string;
   onClick?: any;
-};
+}
 
 export interface ButtonProps {
   isExplore?: boolean;
   text: string;
   handleButton?: () => void;
-};
+}
 
 export interface LayoutProps {
   children: React.ReactNode;
-};
+}
 
 export interface NavbarProps {
   children: React.ReactNode;
-};
+}
 
 export interface Paginationrops {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-};
+}
 
 export interface ContainerProps {
   isLandingPage?: boolean;
   children?: React.ReactNode;
   id?: string;
-};
+}
+
+export interface PopupMessageProps {
+  message: string;
+  type: string;
+}

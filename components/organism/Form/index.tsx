@@ -26,6 +26,8 @@ const FormModal: React.FC<FormModalProps> = ({
   setIsShowModal,
   updateContactsList,
   updateEditedContact,
+  showErrorMessage,
+  showSuccessMessage,
   setIsEdit,
   isEdit,
   selectedContact,
@@ -88,13 +90,13 @@ const FormModal: React.FC<FormModalProps> = ({
 
     // Check if the first name contains special characters
     if (specialCharacterRegex.test(firstName)) {
-      alert("First name cannot contain special characters.");
+      showErrorMessage("First name cannot contain special characters.");
       return;
     }
 
     // Check if the last name contains special characters
     if (specialCharacterRegex.test(lastName)) {
-      alert("Last name cannot contain special characters.");
+      showErrorMessage("Last name cannot contain special characters.");
       return;
     }
 
@@ -139,6 +141,8 @@ const FormModal: React.FC<FormModalProps> = ({
         const response = await fetchUpdatedContact(selectedContact.id);
 
         updateEditedContact(response);
+
+        showSuccessMessage("Contact edited successfully");
       } else {
         // Add a new contact if it's in add mode
         const response = await addContact({
@@ -153,12 +157,14 @@ const FormModal: React.FC<FormModalProps> = ({
         const newContact = response.data.insert_contact.returning[0];
 
         updateContactsList(newContact);
+
+        showSuccessMessage("Contact added successfully");
       }
 
       // Close the modal
       handleCloseModal();
     } catch (error) {
-      console.error("Error adding/updating contact:", error);
+      showErrorMessage("Failed adding or updating contact");
     }
   };
 

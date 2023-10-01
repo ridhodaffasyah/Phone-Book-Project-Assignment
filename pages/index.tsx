@@ -25,6 +25,7 @@ import Pagination from "@/components/molecule/Pagination";
 import ContactList from "@/components/molecule/ListContact";
 import Container from "@/components/organism/Container";
 import FormModal from "@/components/organism/Form";
+import PopupMessage from "@/components/atom/PopupMessage";
 
 import { useMutation } from "@apollo/client";
 import createApolloClient from "../apollo-client";
@@ -55,6 +56,9 @@ const Home: React.FC<HomeProps> = ({ data }) => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [message, setMessage] = useState("");
 
   const [deleteContact] = useMutation(DELETE_CONTACT);
 
@@ -142,6 +146,8 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     );
 
     setContacts(updatedContacts);
+
+    showSuccessMessage("Added to favorite successfully");
   };
 
   const handleUnfavoriteToggle = (contactId: number) => {
@@ -177,6 +183,28 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     setIsShowModal(true);
   };
 
+  const showSuccessMessage = (message: string) => {
+    setIsSuccess(true);
+    setMessage(message);
+
+    // Automatically hide the message after 3 seconds
+    setTimeout(() => {
+      setIsSuccess(false);
+      setMessage("");
+    }, 3000);
+  };
+
+  const showErrorMessage = (message: string) => {
+    setIsError(true);
+    setMessage(message);
+
+    // Automatically hide the message after 3 seconds
+    setTimeout(() => {
+      setIsError(false);
+      setMessage("");
+    }, 3000);
+  };
+
   const handleRemoveContact = async (contactId: number) => {
     const isFavorite = favoriteContacts.some(
       (contact) => contact.id === contactId
@@ -203,7 +231,18 @@ const Home: React.FC<HomeProps> = ({ data }) => {
     setContacts(updatedContacts);
 
     // Remove it from the database
-    await deleteContact({ variables: { id: contactId } });
+    try {
+      // Remove it from the database
+      await deleteContact({
+        variables: {
+          id: contactId,
+        },
+      });
+
+      showSuccessMessage("Contact deleted successfully");
+    } catch (err) {
+      showErrorMessage("Failed to delete contact");
+    }
   };
 
   const updateContactsList = (newContact: any) => {
@@ -230,7 +269,7 @@ const Home: React.FC<HomeProps> = ({ data }) => {
 
     setFavoriteContacts(updatedFavoriteContacts);
     setContacts(updatedContacts);
-  }
+  };
 
   const handleContactClick = (contact: any) => {
     setSelectedContact(contact);
@@ -270,7 +309,8 @@ const Home: React.FC<HomeProps> = ({ data }) => {
                     name={contact.first_name + " " + contact.last_name}
                     phone={contact.phones.map((phone) => phone.number)}
                     isFavorite={favoriteContacts.some(
-                      (favContact) => favContact.id === contact.id)}
+                      (favContact) => favContact.id === contact.id
+                    )}
                     onFavoriteToggle={() => handleFavoriteToggle(contact.id)}
                     onUnfavoriteToggle={() =>
                       handleUnfavoriteToggle(contact.id)
@@ -341,6 +381,8 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           </PaginationContainer>
         </Container>
       </ContainerTop>
+      {isSuccess && <PopupMessage message={message} type="success" />}
+      {isError && <PopupMessage message={message} type="error" />}
       {(isShowModal || isEdit) && (
         <FormModal
           setIsShowModal={setIsShowModal}
@@ -349,6 +391,8 @@ const Home: React.FC<HomeProps> = ({ data }) => {
           isEdit={isEdit}
           setIsEdit={setIsEdit}
           selectedContact={selectedContact}
+          showErrorMessage={showErrorMessage}
+          showSuccessMessage={showSuccessMessage}
         />
       )}
     </LayoutPages>
