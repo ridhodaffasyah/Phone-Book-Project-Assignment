@@ -2,7 +2,7 @@ import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import { ApolloProvider } from "@apollo/client";
 import createApolloClient from "../apollo-client";
-import { Loading, Dot, DotContainer } from './styles';
+import { Loading, Dot, DotContainer } from '../styles/style';
 
 const App = ({ Component, pageProps}: AppProps) => {
   const client = createApolloClient();

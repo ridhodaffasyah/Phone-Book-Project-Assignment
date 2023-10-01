@@ -19,7 +19,7 @@ import {
   ContainerAction,
   ContainerAdd,
   ContainerIcon,
-} from "./styles";
+} from "../styles/style";
 import LayoutPages from "@/components/layout";
 import Pagination from "@/components/molecule/Pagination";
 import ContactList from "@/components/molecule/ListContact";
